@@ -8,52 +8,51 @@ import Panel from "@/components/panel";
 import { marked } from "marked";
 import { toToc } from "@/components/anchor";
 import { GetServerSideProps } from "next";
-import DynamicThemeComponents from "@/styles/themes";
+import MdViewer from "@/components/mdRender/mdViewer/index";
+
 interface IProps {
   article: IArticleInitialState,
   catalogContent: string,
   renderContent: string,
   articleTime: string,
 }
+
+const routeChange = (catalogRef: any, articleRef: any) => {
+  const itemList = catalogRef.current?.getElementsByClassName(
+    "item"
+  ) as HTMLCollection;
+  for (let i = 0; i < itemList.length; i++) {
+    const child = itemList[i];
+    child.classList.remove("active");
+    if (child.getAttribute("href") === location.hash) {
+      child.classList.add("active");
+    }
+  }
+  const divList = articleRef.current?.getElementsByClassName('heading') as HTMLCollection;
+  for (let i = 0; i < divList.length; i++) {
+    const child = divList[i] as HTMLElement;
+    if ("#" + child.getAttribute("data-id") === location.hash) {
+      window.scrollTo({
+        top: child.offsetTop,
+      });
+      break;
+    }
+  }
+};
+
 const Article: React.FC<IProps> = (props: IProps) => {
-  const { article, catalogContent, renderContent, articleTime } = props;
+  const { article, catalogContent, articleTime } = props;
   const articleRef = useRef<HTMLDivElement | null>(null);
   const catalogRef = useRef<HTMLDivElement | null>(null);
   const articleCatalogRef = useRef<HTMLDivElement | null>(null);
-  const DynamicComponent = DynamicThemeComponents[article.theme];
   useEffect(() => {
-    const routeChange = () => {
-      const itemList = catalogRef.current?.getElementsByClassName(
-        "item"
-      ) as HTMLCollection;
-      for (let i = 0; i < itemList.length; i++) {
-        const child = itemList[i];
-        child.classList.remove("active");
-        if (child.getAttribute("href") === location.hash) {
-          child.classList.add("active");
-        }
-      }
-      const divList = articleRef.current?.getElementsByTagName(
-        "div"
-      ) as HTMLCollection;
-      for (let i = 0; i < divList.length; i++) {
-        const child = divList[i] as HTMLElement;
-        if ("#" + child.getAttribute("data-id") === location.hash) {
-          window.scrollTo({
-            top: child.offsetTop,
-          });
-        }
-      }
-    };
     const handleScroll = () => {
-      if (window.scrollY >= 560) {
+      if (window.scrollY >= 590) {
         (articleCatalogRef.current as any).style.position = "fixed";
       } else {
         (articleCatalogRef.current as any).style.position = "relative";
       }
-      const divList = articleRef.current?.getElementsByTagName(
-        "div"
-      ) as HTMLCollection;
+      const divList = articleRef.current?.getElementsByClassName('heading') as HTMLCollection;
       const titleList: Array<number> = [];
       for (let i = 0; i < divList.length; i++) {
         const child = divList[i] as HTMLElement;
@@ -62,10 +61,7 @@ const Article: React.FC<IProps> = (props: IProps) => {
       titleList.push(2 * titleList[titleList.length - 1]);
       let i = 0;
       for (; i < titleList.length - 1; i++) {
-        if (
-          window.scrollY >= titleList[i] &&
-          window.scrollY < titleList[i + 1]
-        ) {
+        if (window.scrollY >= titleList[i] && window.scrollY < titleList[i + 1]) {
           break;
         }
       }
@@ -77,15 +73,14 @@ const Article: React.FC<IProps> = (props: IProps) => {
         child.classList.remove("active");
         if (i === j) {
           child.classList.add("active");
-          location.hash = `#heading-${i}`;
         }
       }
     };
-    window.addEventListener("hashchange", routeChange);
+    window.addEventListener("hashchange", () => routeChange(catalogRef, articleRef));
     window.addEventListener("scroll", handleScroll);
-    routeChange();
+    setTimeout(() => routeChange(catalogRef, articleRef), 1000)
     return () => {
-      window.removeEventListener("hashchange", routeChange);
+      window.removeEventListener("hashchange", () => routeChange(catalogRef, articleRef));
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
@@ -127,15 +122,8 @@ const Article: React.FC<IProps> = (props: IProps) => {
                   height="400"
                 />}
               </div>
-              <div className="markdown-body">
-                <DynamicComponent />
-                <div
-                  style={{ whiteSpace: "pre-line" }}
-                  className={styles.article_content}
-                  ref={articleRef}
-                  dangerouslySetInnerHTML={{ __html: renderContent }}
-                >
-                </div>
+              <div ref={articleRef}>
+                <MdViewer value={article.content} themeName={article.theme} />
               </div>
             </article>
           </div>
@@ -186,14 +174,18 @@ const Article: React.FC<IProps> = (props: IProps) => {
             </div>
             {catalogContent !== "" && <div ref={articleCatalogRef} className={styles.article_catalog}>
               <div className={styles.catalog_title}>目录</div>
-              <div ref={catalogRef} className={styles.catalog}>
+              <div
+                ref={catalogRef}
+                className={styles.catalog}
+                onClick={() => routeChange(catalogRef, articleRef)}
+              >
                 <Anchor catalogContent={catalogContent} />
               </div>
             </div>}
           </div>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 
@@ -203,12 +195,13 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
     const article = store.getState().article;
     const articleTime = article.time.replace("-", "年").replace("-", "月").replace(" ", "日 ").substring(0, article.time.lastIndexOf(":") + 1);
     let data = marked.parse(article.content || "");
-    const toc = data.match(/<[hH][1-6].*?>.*?<\/[hH][1-6].*?>/g) as string[];
+    const toc = data.match(/<[hH][1-3].*?>.*?<\/[hH][1-3].*?>/g) as string[];
     toc?.forEach((item: string, index: number) => {
       let _toc = `<div data-id="heading-${index}">${item} </div>`;
       data = data.replace(item, _toc);
     });
     const catalogContent = toToc(toc);
+    console.log(catalogContent);
     return {
       props: { article, catalogContent, renderContent: data, articleTime },
     };
