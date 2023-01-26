@@ -2,7 +2,7 @@ import type { BytemdPlugin } from "bytemd";
 import { icon } from "./icon";
 import { styles } from "./styles";
 
-export const changeThemeStyle: (style: string) => void = (style) => {
+export const changeThemeStyle = (style: string) => {
   if (process.browser) {
     let styleDOM = document.head.querySelector(".md-theme");
     if (!styleDOM) {
@@ -38,7 +38,7 @@ export default function theme(themeName = "juejin"): BytemdPlugin {
             title,
             handler: {
               type: "action",
-              click({}) {
+              click() {
                 changeThemeStyle(style);
               },
             },

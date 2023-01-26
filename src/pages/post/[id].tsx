@@ -78,7 +78,7 @@ const Article: React.FC<IProps> = (props: IProps) => {
     };
     window.addEventListener("hashchange", () => routeChange(catalogRef, articleRef));
     window.addEventListener("scroll", handleScroll);
-    setTimeout(() => routeChange(catalogRef, articleRef), 1000)
+    setTimeout(() => routeChange(catalogRef, articleRef), 1000);
     return () => {
       window.removeEventListener("hashchange", () => routeChange(catalogRef, articleRef));
       window.removeEventListener("scroll", handleScroll);

@@ -44,16 +44,14 @@ class myRequest {
 }
 
 const request = new myRequest({
-  // baseURL: BASE_URL,
-  baseURL: TEST_URL,
+  baseURL: BASE_URL,
   timeout: TIME_OUT,
 });
-
 
 export default request;
 
 export const testRequest = new myRequest({
-  baseURL: "http://127.0.0.1:4523/m1/2202148-0-default",
+  baseURL: TEST_URL,
   timeout: TIME_OUT,
 });
 
