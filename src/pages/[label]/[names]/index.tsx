@@ -89,16 +89,16 @@ const SubContent: React.FC<IProps> = (props) => {
 
   function isSortBy(): string {
     switch (sort) {
-      case "three_days_hottest":
-        return "3天内";
-      case "weekly_hottest":
-        return "7天内";
-      case "monthly_hottest":
-        return "30天内";
-      case "hottest":
-        return "全部";
-      default:
-        return "";
+    case "three_days_hottest":
+      return "3天内";
+    case "weekly_hottest":
+      return "7天内";
+    case "monthly_hottest":
+      return "30天内";
+    case "hottest":
+      return "全部";
+    default:
+      return "";
     }
   }
   return (
