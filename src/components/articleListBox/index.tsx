@@ -1,4 +1,5 @@
 import React, { ReactNode, useEffect,useCallback } from "react";
+
 import { memo } from "react";
 
 import ArticleListItem from "@/components/articleListItem";
@@ -66,4 +67,3 @@ const ArticleListBox: React.FC<IProps> = () => {
 };
 export default memo(ArticleListBox);
 ArticleListBox.displayName = "ArticleListBox";
-

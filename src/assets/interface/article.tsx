@@ -77,9 +77,9 @@ export interface author {
 }
 
 export interface IArticleListRequest {
-  size: number,
-  page: number,
-  label: string,
-  type: string,
-  subtab: string
+  size:number,
+  page:number,
+  label:string,
+  type:string,
+  subtab:string
 }
