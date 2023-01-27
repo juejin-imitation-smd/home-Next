@@ -14,12 +14,6 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
-      {
-        protocol: "https",
-        hostname: "p1-juejin.byteimg.com",
-        port: "",
-        pathname: "/**",
-      },
     ],
   },
 };

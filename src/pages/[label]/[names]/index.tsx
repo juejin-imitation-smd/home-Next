@@ -1,32 +1,34 @@
-import Advertise from "@/components/advertise";
-import { getHeaderTags, getOriginHeader } from "@/components/header/service";
-import Subheader from "@/components/subheader";
-import SubShow from "@/components/subshow";
-import wrapper from "@/store";
-import { useRouter } from "next/router";
+
 import React, { ReactNode, useEffect } from "react";
 import { memo } from "react";
-import { getAdvertiseData } from "@/components/advertise/service";
-
+import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
-import { getArticlesAction } from "@/components/articleListBox/store/articleList";
+import wrapper from "@/store";
+
+import type { IAppDispatch, IAppState } from "@/store";
+import { useSelector, useDispatch } from "react-redux";
+
 import Link from "next/link";
 import { DownOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Dropdown, Space, Skeleton } from "antd";
 
+import styles from "./recommended.module.less";
+
+import Subheader from "@/components/subheader";
+import SubShow from "@/components/subshow";
+import Advertise from "@/components/advertise";
+import { getAdvertiseData } from "@/components/advertise/service";
+import { getArticlesAction } from "@/components/articleListBox/store/articleList";
+import { getHeaderTags, getOriginHeader } from "@/components/header/service";
 import ArticleListBox from "@/components/articleListBox";
 import AuthorListBox from "@/components/authorListBox";
-import styles from "./recommended.module.less";
-import { useSelector, useDispatch } from "react-redux";
-import type { IAppDispatch, IAppState } from "@/store";
 import {
   changeActiveTypeAction,
   changeLoadingAction,
   changeLabelAction,
   changeSubtabAction,
 } from "@/components/articleListBox/store/articleList";
-
 import { getAuthorsAction } from "@/components/authorListBox/store/authorList";
 
 interface IProps {
@@ -124,7 +126,7 @@ const SubContent: React.FC<IProps> = (props) => {
             <div className={styles.left}>
               <div className={styles.artListHead}>
                 <Link href={baseUrl}>
-                  <span className={activeType === "" ? styles.activeType : ""}>
+                  <span className={(activeType === "recommend") ? styles.activeType : ""}>
                     推荐
                   </span>
                 </Link>
@@ -167,7 +169,7 @@ const SubContent: React.FC<IProps> = (props) => {
                 <AuthorListBox />
               </div>
               <div className={styles.advertise}>
-                <Advertise advertiseData={advertiseData}/>
+                <Advertise advertiseData={advertiseData} />
               </div>
             </div>
           </div>
@@ -189,15 +191,14 @@ export const getServerSideProps: GetServerSideProps =
       const res = await getOriginHeader();
       const subheader = await getHeaderTags();
       const advertiseData = await getAdvertiseData();
-
       if (
         query.label &&
-        query.label[0] !== "/" &&
-        query.label[0] !== "/favicon.ico"
+        query.label !== "/" &&
+        query.label !== "/favicon.ico"
       ) {
-        store.dispatch(changeActiveTypeAction(query.sort ? query.sort : ""));
-        store.dispatch(changeLabelAction(query.label[0]));
-        query.label[1] && store.dispatch(changeSubtabAction(query.label[1]));
+        store.dispatch(changeActiveTypeAction(query.sort ? query.sort : "recommend"));
+        store.dispatch(changeLabelAction(query.label));
+        query.names && store.dispatch(changeSubtabAction(query.names));
         await store.dispatch(
           getArticlesAction({
             page: curPage,

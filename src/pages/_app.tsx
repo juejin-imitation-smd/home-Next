@@ -3,9 +3,8 @@ import "antd/dist/reset.css";
 import "@/styles/globals.less";
 
 import "@/styles/Article.less";
-import "uno.css";
+// import "uno.css";
 import "@/styles/header.less";
-import "@/styles/articleList.less";
 
 import { Provider } from "react-redux";
 import wrapper from "@/store";

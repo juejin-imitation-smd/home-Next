@@ -53,7 +53,7 @@ export interface IArticleItem {
    * 标题
    */
   title: string;
-  uid: string;
+  id: number;
   /**
    * 阅读数
    */
@@ -72,14 +72,14 @@ export interface author {
    */
   avatar: string;
   description: string;
-  id: string;
+  id: number;
   username: string;
 }
 
 export interface IArticleListRequest {
-  size:number,
-  page:number,
-  label:string,
-  type:string,
-  subtab:string
+  size: number,
+  page: number,
+  label: string,
+  type: string,
+  subtab: string
 }
