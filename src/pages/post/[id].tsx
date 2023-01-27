@@ -18,9 +18,8 @@ interface IProps {
 }
 
 const routeChange = (catalogRef: any, articleRef: any) => {
-  const itemList = catalogRef.current?.getElementsByClassName(
-    "item"
-  ) as HTMLCollection;
+  const itemList = catalogRef.current?.getElementsByClassName("item") as HTMLCollection;
+  if (!itemList) return;
   for (let i = 0; i < itemList.length; i++) {
     const child = itemList[i];
     child.classList.remove("active");
@@ -28,7 +27,7 @@ const routeChange = (catalogRef: any, articleRef: any) => {
       child.classList.add("active");
     }
   }
-  const divList = articleRef.current?.getElementsByClassName('heading') as HTMLCollection;
+  const divList = articleRef.current?.getElementsByClassName("heading") as HTMLCollection;
   for (let i = 0; i < divList.length; i++) {
     const child = divList[i] as HTMLElement;
     if ("#" + child.getAttribute("data-id") === location.hash) {
@@ -48,11 +47,12 @@ const Article: React.FC<IProps> = (props: IProps) => {
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY >= 590) {
-        (articleCatalogRef.current as any).style.position = "fixed";
+        (articleCatalogRef.current as any)!.style.position = "fixed";
       } else {
-        (articleCatalogRef.current as any).style.position = "relative";
+        (articleCatalogRef.current as any)!.style.position = "relative";
       }
-      const divList = articleRef.current?.getElementsByClassName('heading') as HTMLCollection;
+      const divList = articleRef.current?.getElementsByClassName("heading") as HTMLCollection;
+      if (!divList) return;
       const titleList: Array<number> = [];
       for (let i = 0; i < divList.length; i++) {
         const child = divList[i] as HTMLElement;
@@ -65,9 +65,7 @@ const Article: React.FC<IProps> = (props: IProps) => {
           break;
         }
       }
-      const itemList = catalogRef.current?.getElementsByClassName(
-        "item"
-      ) as HTMLCollection;
+      const itemList = catalogRef.current?.getElementsByClassName("item") as HTMLCollection;
       for (let j = 0; j < itemList.length; j++) {
         const child = itemList[j];
         child.classList.remove("active");
@@ -109,7 +107,6 @@ const Article: React.FC<IProps> = (props: IProps) => {
                     <span className={styles.view_count}>
                       &nbsp;&nbsp;·&nbsp;&nbsp;阅读  {article.view_count}
                     </span>
-
                   </div>
                 </div>
               </div>
@@ -145,10 +142,10 @@ const Article: React.FC<IProps> = (props: IProps) => {
                 </span>
               </div>
             </div>
-            <div className={styles.related_articles}>
+            {article.related_articles.length !== 0 && <div className={styles.related_articles}>
               <div className={styles.block_title}>相关文章</div>
               <div className={styles.entry_list}>
-                {article && article.related_articles.map((article) => {
+                {article.related_articles.map((article) => {
                   return (
                     <>
                       <div className={styles.item}>
@@ -171,7 +168,7 @@ const Article: React.FC<IProps> = (props: IProps) => {
                   );
                 })}
               </div>
-            </div>
+            </div>}
             {catalogContent !== "" && <div ref={articleCatalogRef} className={styles.article_catalog}>
               <div className={styles.catalog_title}>目录</div>
               <div
@@ -193,15 +190,25 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
   return async (context: any) => {
     await store.dispatch(getArticleByIdAction(context.query.id));
     const article = store.getState().article;
-    const articleTime = article.time.replace("-", "年").replace("-", "月").replace(" ", "日 ").substring(0, article.time.lastIndexOf(":") + 1);
-    let data = marked.parse(article.content || "");
+    const date = new Date(+article.time);
+    const articleTime = `${date.getFullYear()}年${(date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1)}月${date.getDate()}日 ${(date.getHours() + 1 < 10 ? "0" + (date.getHours() + 1) : date.getHours() + 1)}:${(date.getMinutes() + 1 < 10 ? "0" + (date.getMinutes() + 1) : date.getMinutes() + 1)}`;
+    // 处理可能存在的meta data
+    const articleContentList = article.content.split('\n');
+    if (articleContentList[0] === "---") {
+      for (let i = 1; i < articleContentList.length; i++) {
+        if (articleContentList[i] === "---") {
+          articleContentList.splice(0, i + 1);
+        }
+      }
+    }
+    let data = marked.parse(articleContentList.join("\n") || "");
     const toc = data.match(/<[hH][1-3].*?>.*?<\/[hH][1-3].*?>/g) as string[];
     toc?.forEach((item: string, index: number) => {
       let _toc = `<div data-id="heading-${index}">${item} </div>`;
       data = data.replace(item, _toc);
     });
     const catalogContent = toToc(toc);
-    console.log(catalogContent);
+
     return {
       props: { article, catalogContent, renderContent: data, articleTime },
     };
