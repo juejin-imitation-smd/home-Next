@@ -195,7 +195,7 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
     const date = new Date(+ article.time);
     const articleTime = `${date.getFullYear()}年${(date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1)}月${date.getDate()}日 ${(date.getHours() + 1 < 10 ? "0" + (date.getHours() + 1) : date.getHours() + 1)}:${(date.getMinutes() + 1 < 10 ? "0" + (date.getMinutes() + 1) : date.getMinutes() + 1)}`;
     // 处理可能存在的meta data
-    const articleContentList = article.content.split('\n');
+    const articleContentList = article.content.split("\n");
     if (articleContentList[0] === "---") {
       for (let i = 1; i < articleContentList.length; i++) {
         if (articleContentList[i] === "---") {
