@@ -44,7 +44,6 @@ class MdViewer extends Component<IProps, IState> {
     let children = Array.from(dom.children) as HTMLElement[];
     if (children.length > 0) {
       let index = 0;
-      // current element has children, look deeper
       for (let i = 0; i < children.length; i++) {
         const tagName = children[i].tagName;
         if (tagName === "H1" || tagName === "H2" || tagName === "H3") {

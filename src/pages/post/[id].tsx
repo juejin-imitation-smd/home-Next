@@ -9,6 +9,7 @@ import { marked } from "marked";
 import { toToc } from "@/components/anchor";
 import { GetServerSideProps } from "next";
 import MdViewer from "@/components/mdRender/mdViewer/index";
+import { getOriginHeader } from "@/components/header/service";
 
 interface IProps {
   article: IArticleInitialState,
@@ -190,7 +191,8 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
   return async (context: any) => {
     await store.dispatch(getArticleByIdAction(context.query.id));
     const article = store.getState().article;
-    const date = new Date(+article.time);
+    const res = await getOriginHeader();
+    const date = new Date(+ article.time);
     const articleTime = `${date.getFullYear()}年${(date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1)}月${date.getDate()}日 ${(date.getHours() + 1 < 10 ? "0" + (date.getHours() + 1) : date.getHours() + 1)}:${(date.getMinutes() + 1 < 10 ? "0" + (date.getMinutes() + 1) : date.getMinutes() + 1)}`;
     // 处理可能存在的meta data
     const articleContentList = article.content.split('\n');
@@ -208,9 +210,14 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
       data = data.replace(item, _toc);
     });
     const catalogContent = toToc(toc);
-
     return {
-      props: { article, catalogContent, renderContent: data, articleTime },
+      props: {
+        article,
+        catalogContent,
+        renderContent: data,
+        articleTime,
+        originHeader: res || [],
+      },
     };
   };
 });
