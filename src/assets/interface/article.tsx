@@ -22,7 +22,7 @@ export interface IArticleItem {
      */
     avatar: string;
     description: string;
-    id: string;
+    id: number;
     username: string;
   };
   /**
@@ -72,7 +72,7 @@ export interface author {
    */
   avatar: string;
   description: string;
-  id: number;
+  id: string;
   username: string;
 }
 

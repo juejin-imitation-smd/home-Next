@@ -21,7 +21,7 @@
     "@bytemd/react": "^1.20.0",
     "@next/font": "13.1.2",
     "@reduxjs/toolkit": "^1.9.1",
-    "@tanem/react-nprogress": "^5.0.25",
+    "@tanem/react-nprogress": "^5.0.24",
     "@types/lodash": "^4.14.191",
     "@types/marked": "^4.0.8",
     "@types/node": "18.11.18",
