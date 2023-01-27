@@ -8,8 +8,8 @@ import theme from "../plugin-theme";
 import gfm from "@bytemd/plugin-gfm";
 import highlight from "@bytemd/plugin-highlight-ssr";
 import { Viewer } from "@bytemd/react";
-import 'bytemd/dist/index.css';
-import 'highlight.js/styles/default.css';
+import "bytemd/dist/index.css";
+import "highlight.js/styles/default.css";
 
 interface IProps {
   value: string;
