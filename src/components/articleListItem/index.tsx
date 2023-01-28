@@ -1,9 +1,10 @@
+
 import React,{useState} from "react";
 import { memo } from "react";
 import { IArticleItem } from "@/assets/interface/article";
 import { formatChangeTime } from "@/utils/formatTime";
 import styles from "./articleListItem.module.less";
-import Router from "next/router";
+
 import { Divider } from "antd";
 import { Popover } from "antd";
 import Image from "next/image";
@@ -12,12 +13,12 @@ import {
 } from "@ant-design/icons";
 import AuthorListItem from "../authorListItem";
 
-
 interface IProps {
   article: IArticleItem
 }
 
 const ArticleListItem: React.FC<IProps> = (props) => {
+
   const [isClosed,setIsClosed] = useState(false);
   const { article } = props;
   const content = (
@@ -28,7 +29,7 @@ const ArticleListItem: React.FC<IProps> = (props) => {
 
 
   return (
-    <div className={styles.articleListItem+` ${isClosed?styles.closed:""}`} onClick={()=>{Router.push("/article/" + article.id);}}>
+    <div className={styles.articleListItem+` ${isClosed?styles.closed:""}`} onClick={()=>{window.open("/article/" + article.id);}}>
       <div className={styles.artHead}>
         <div className={styles.artHeadLeft}>
           <span className={styles.pcAuthor}>
