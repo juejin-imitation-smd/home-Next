@@ -44,13 +44,14 @@ const Article: React.FC<IProps> = (props: IProps) => {
   const { article, catalogContent, articleTime } = props;
   const articleRef = useRef<HTMLDivElement | null>(null);
   const catalogRef = useRef<HTMLDivElement | null>(null);
+  const relatedArticleRef = useRef<HTMLDivElement | null>(null);
   const articleCatalogRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY >= 590) {
-        (articleCatalogRef.current as any)!.style.position = "fixed";
+      if (window.scrollY >= (relatedArticleRef.current ? relatedArticleRef.current.offsetHeight : 0) + 191) {
+        (articleCatalogRef.current as HTMLDivElement)!.style.position = "fixed";
       } else {
-        (articleCatalogRef.current as any)!.style.position = "relative";
+        (articleCatalogRef.current as HTMLDivElement)!.style.position = "relative";
       }
       const divList = articleRef.current?.getElementsByClassName("heading") as HTMLCollection;
       if (!divList) return;
@@ -143,7 +144,7 @@ const Article: React.FC<IProps> = (props: IProps) => {
                 </span>
               </div>
             </div>
-            {article.related_articles.length !== 0 && <div className={styles.related_articles}>
+            {article.related_articles.length !== 0 && <div className={styles.related_articles} ref={relatedArticleRef}>
               <div className={styles.block_title}>相关文章</div>
               <div className={styles.entry_list}>
                 {article.related_articles.map((article) => {
@@ -192,7 +193,7 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
     await store.dispatch(getArticleByIdAction(context.query.id));
     const article = store.getState().article;
     const res = await getOriginHeader();
-    const date = new Date(+ article.time);
+    const date = new Date(+ (article.time || 0));
     const articleTime = `${date.getFullYear()}年${(date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1)}月${date.getDate()}日 ${(date.getHours() + 1 < 10 ? "0" + (date.getHours() + 1) : date.getHours() + 1)}:${(date.getMinutes() + 1 < 10 ? "0" + (date.getMinutes() + 1) : date.getMinutes() + 1)}`;
     // 处理可能存在的meta data
     const articleContentList = article.content.split("\n");
@@ -224,3 +225,4 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 
 export default memo(Article);
 Article.displayName = "Article";
+
