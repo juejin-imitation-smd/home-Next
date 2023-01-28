@@ -14,7 +14,6 @@ export interface IArticleListInitialState {
   subtab: string;
 }
 export const getArticlesAction = createAsyncThunk("articleList", async (data: IArticleListRequest) => {
-  console.log(data);
   const res = await getArticleListApi(data);
   return res.data.list;
 });

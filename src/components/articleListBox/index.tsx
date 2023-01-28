@@ -1,4 +1,5 @@
 import React, { ReactNode, useEffect,useCallback } from "react";
+
 import { memo } from "react";
 
 import ArticleListItem from "@/components/articleListItem";
@@ -48,7 +49,7 @@ const ArticleListBox: React.FC<IProps> = () => {
     if(curPage===1) return;
     dispatch(getArticlesAction({ size: curSize, page: curPage, label: label, type: activeType, subtab: subtab }));
   },[curPage]);
-  
+
 
   return (
     <div>
