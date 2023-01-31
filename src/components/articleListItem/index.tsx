@@ -12,6 +12,7 @@ import {
   CloseOutlined
 } from "@ant-design/icons";
 import AuthorListItem from "../authorListItem";
+import md2NormalStr from "@/utils/md2NormalStr";
 
 interface IProps {
   article: IArticleItem
@@ -25,7 +26,6 @@ const ArticleListItem: React.FC<IProps> = (props) => {
       <AuthorListItem author={article.author} />
     </div>
   );
-
 
   return (
     <div className={styles.articleListItem+` ${isClosed?styles.closed:""}`} onClick={()=>{window.open("/article/" + article.id);}}>
@@ -54,7 +54,7 @@ const ArticleListItem: React.FC<IProps> = (props) => {
             {article.title}
           </div>
           <div className={styles.artContent + " textOms"}>
-            {article.content}
+            {md2NormalStr(article.content)}
           </div>
         </div>
         <div className={styles.artIMG}>
