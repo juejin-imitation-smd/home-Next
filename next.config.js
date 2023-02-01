@@ -18,7 +18,7 @@ const nextConfig = {
         protocol: "http",
         hostname: "47.96.134.75",
         port: "1234",
-        pathname: "/**",
+        pathname: "/static/**",
       },
     ],
   },
@@ -46,12 +46,6 @@ module.exports = withLess({
         port: "",
         pathname: "/**",
       },
-      {
-        protocol:"http",
-        hostname:"47.96.134.75",
-        port:"1234",
-        pathname:"/static/**"
-      }
     ],
   },
   ...nextConfig,
