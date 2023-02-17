@@ -12,6 +12,13 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "http",
+        hostname: "47.96.134.75",
+        port: "1234",
+        pathname: "/static/**",
+      },
+      {
+        //dev阶段mock图片数据对应的网址，prd需要更改为后端对应网址
+        protocol: "http",
         hostname: "dummyimage.com",
         port: "",
         pathname: "/**",
